@@ -5,19 +5,20 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * aop切面选择datasource
+ * 切面选择,根据Datasource 注解来设置不同的数据源
  * Order(-1) 保证该AOP在@Transactional之前执行
  * @author 作者：<a href="mailto:1933549135@qq.com">胡金虎</a>
  * @version 创建时间：2016年4月24日 上午10:46:04 
  */
 @Aspect
-@Order(-1)  
+@Order(-1)
 @Component
 public class DataSourceAspect {
 
@@ -34,9 +35,14 @@ public class DataSourceAspect {
 	@Before("serviceExecution()")
 	public void setDynamicDataSource(JoinPoint jp) {
 		log.info("@Pointcut before.....");
-		DataSource dateSource = jp.getTarget().getClass().getAnnotation(DataSource.class);
-		if (dateSource != null) {
-			DataSourceContextHolder.setDataSource(dateSource.dataSource());
+		DataSource dataSource = jp.getTarget().getClass().getAnnotation(DataSource.class);
+		log.info("@Pointcut class DataSource:{}",dataSource!=null?dataSource.dataSource():null);
+		if (dataSource == null) {
+			dataSource = ((MethodSignature) jp.getSignature()).getMethod().getAnnotation(DataSource.class);
+			log.info("@Pointcut method DataSource:{}",dataSource!=null?dataSource.dataSource():null);
+		}
+		if (dataSource != null) {
+			DataSourceContextHolder.setDataSource(dataSource.dataSource());
 		}
 	}
 

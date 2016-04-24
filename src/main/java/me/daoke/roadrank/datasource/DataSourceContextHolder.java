@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
+ * 自定义DataSourceContextHolder
  * @author 作者：<a href="mailto:1933549135@qq.com">胡金虎</a>
  * @version 创建时间：2016年4月24日 上午10:19:25 
  */

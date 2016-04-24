@@ -3,8 +3,8 @@ package me.daoke.roadrank.service.impl;
 import java.util.List;
 
 import me.daoke.roadrank.dao.LoginConfigMapper;
-import me.daoke.roadrank.datasource.DataSourceType;
 import me.daoke.roadrank.datasource.DataSource;
+import me.daoke.roadrank.datasource.DataSourceType;
 import me.daoke.roadrank.dto.LoginConfig;
 import me.daoke.roadrank.dto.LoginConfigCriteria;
 import me.daoke.roadrank.service.ILoginConfigService;
