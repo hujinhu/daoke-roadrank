@@ -34,7 +34,7 @@ public class DataSourceAspect {
 	@Before("serviceExecution()")
 	public void setDynamicDataSource(JoinPoint jp) {
 		log.info("@Pointcut before.....");
-		DateSource dateSource = jp.getTarget().getClass().getAnnotation(DateSource.class);
+		DataSource dateSource = jp.getTarget().getClass().getAnnotation(DataSource.class);
 		if (dateSource != null) {
 			DataSourceContextHolder.setDataSource(dateSource.dataSource());
 		}

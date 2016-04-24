@@ -4,7 +4,7 @@ import java.util.List;
 
 import me.daoke.roadrank.dao.LoginConfigMapper;
 import me.daoke.roadrank.datasource.DataSourceType;
-import me.daoke.roadrank.datasource.DateSource;
+import me.daoke.roadrank.datasource.DataSource;
 import me.daoke.roadrank.dto.LoginConfig;
 import me.daoke.roadrank.dto.LoginConfigCriteria;
 import me.daoke.roadrank.service.ILoginConfigService;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@DateSource(dataSource=DataSourceType.LOGIN_CONFIG)
+@DataSource(dataSource=DataSourceType.LOGIN_CONFIG)
 public class LoginConfigServiceImpl  implements ILoginConfigService{
 
 	@Autowired
