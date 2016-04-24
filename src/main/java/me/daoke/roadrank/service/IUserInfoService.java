@@ -9,13 +9,13 @@ public interface IUserInfoService {
 	 * @param accountid
 	 * @return
 	 */
-	UserInfo getUserByAccount(String accountid);
+	public UserInfo getUserByAccount(String accountid);
 
 	/**
 	 * 更新用户基本信息
 	 * @param baseUserInfo
 	 * @return 
 	 */
-	void updateUser(UserInfo baseUserInfo);
+	public void updateUser(UserInfo baseUserInfo);
 
 }

@@ -43,13 +43,14 @@
      <property name="caches"> 
        <set> 
          <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="default" /> 
-         <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="activityCache" /> 
        </set> 
      </property> 
    </bean> 
+   <!-- 强制使用CGLIB代理 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
 	<!--公共配置属性 -->
 	 <bean id="commonPoolInfo" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-	 
 	   <property name="jmxEnabled" value="${Tomcat.jdbc.pool.jmxEnabled}"></property> 
 		<property name="testWhileIdle" value="${Tomcat.jdbc.pool.testWhileIdle}"></property>
 		<property name="testOnBorrow" value="${Tomcat.jdbc.pool.testOnBorrow}"></property>
@@ -68,19 +69,36 @@
 	</bean>
 
 
-	<!-- 将DataSource的数据源 做为默认数据源 -->
-	<bean id="dataSource" parent="commonPoolInfo">
-		<property name="driverClassName" value="${JDBC.Driver.app_MCade}" />
-		<property name="url" value="${JDBC.ConnectionURL.app_MCade}" />
-		<property name="username" value="${JDBC.Username.app_MCade}" />
-		<property name="password" value="${JDBC.Password.app_MCade}" />
+	<!--动态数据源  -->
+	<bean id="dynamicDataSource"  class="me.daoke.roadrank.datasource.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="me.daoke.roadrank.datasource.DataSourceType">
+				<entry key="WEME_CAR" value-ref="dataSource_WemeCar"></entry>
+				<entry key="LOGIN_CONFIG" value-ref="dataSource_LoginConfig"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource_WemeCar"></property>
+	</bean>
+	<!-- 个人资料数据源 -->
+	<bean id="dataSource_WemeCar" parent="commonPoolInfo">
+		<property name="driverClassName" value="${JDBC.Driver.WemeCar}" />
+		<property name="url" value="${JDBC.ConnectionURL.WemeCar}" />
+		<property name="username" value="${JDBC.Username.WemeCar}" />
+		<property name="password" value="${JDBC.Password.WemeCar}" />
+	</bean>
+	<!-- 登陆数据源 -->
+	<bean id="dataSource_LoginConfig" parent="commonPoolInfo">
+		<property name="driverClassName" value="${JDBC.Driver.LoginConfig}" />
+		<property name="url" value="${JDBC.ConnectionURL.LoginConfig}" />
+		<property name="username" value="${JDBC.Username.LoginConfig}" />
+		<property name="password" value="${JDBC.Password.LoginConfig}" />
 	</bean>
 	 
 
 	<!--事务管理DataSourceTransactionManager -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dynamicDataSource" />
 	</bean>
 	
 	<!-- 使用annotation定义事务 -->
@@ -88,7 +106,7 @@
 	
 	<!-- Spring iBatis SqlMapClient -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dynamicDataSource" />
 		<property name="mapperLocations">
        	 <value>classpath:mapper/**/*Mapper.xml</value>
 		</property>
@@ -98,14 +116,16 @@
 	<!-- 自动扫描mapper配置和dao映射，无需写mybatis-config.xml -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="me.daoke.roadrank.dao" />
+		<!-- 此处不用sqlSessionFactory 是因为和PropertyPlaceholderConfigurer加载顺序冲突 -->
 		<!-- <property name="sqlSessionFactory" ref="sqlSessionFactory"></property> -->
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 	</bean>
 
 	<!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->
 	<bean id="springContextHolder" class="me.daoke.roadrank.utils.SpringContextHolder" lazy-init="false" />
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	
+	<!-- 上传文件大小 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="104857600" />
 		<property name="maxInMemorySize" value="4096" />
 	</bean>
