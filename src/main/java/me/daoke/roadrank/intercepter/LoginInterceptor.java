@@ -2,7 +2,6 @@ package me.daoke.roadrank.intercepter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import me.daoke.roadrank.annotation.NeedAccountId;
 import me.daoke.roadrank.enumeration.ErrorCode;
@@ -18,11 +17,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		HttpSession session = request.getSession();
-		String path = request.getContextPath();
 		String uri = request.getRequestURI();
-		String header = request.getHeader("X-Requested-With");
-
 		// 检验方法是否需要有accountid,如果方法加了NeedAccountid注解,header又没带这参数,就返回签名错误
 		HandlerMethod handler2 = (HandlerMethod) handler;
 		NeedAccountId needAccountId = handler2.getMethodAnnotation(NeedAccountId.class);
@@ -37,7 +32,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 				return false;
 			}
 		}
-
 		return true;
 	}
 

@@ -40,8 +40,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -54,7 +52,6 @@ public class HttpUtil {
 	 * HTTPCLIENT连接池配置
 	 */
 	private static HttpClient HTTPCLIENT = null;
-	private static Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
 	/**
 	 * 
@@ -77,8 +74,6 @@ public class HttpUtil {
 			post.setConfig(requestConfig);
 			entity = new StringEntity(json, "UTF-8");
 			entity.setContentEncoding("UTF-8");
-
-//			entity.setContentType("application/json");// 设置为 json数据
 			entity.setContentType("application/json; charset=utf-8");
 			post.setEntity(entity);
 			for (Map.Entry<String, String> header : headers.entrySet()) {
