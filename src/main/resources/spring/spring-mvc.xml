@@ -52,8 +52,7 @@
 		<!--签名拦截器 -->
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
-			<mvc:exclude-mapping path="/accountLogin/login" /><!-- 登陆不拦截 -->
-			<mvc:exclude-mapping path="/validCode/**" />
+			<mvc:exclude-mapping path="/login/oauth**" /><!-- oauth不校验签名 -->
 			<bean class="me.daoke.roadrank.intercepter.SignInterceptor" />
 		</mvc:interceptor>
 		<bean class="me.daoke.roadrank.intercepter.LoginInterceptor"/>

@@ -130,5 +130,8 @@ public class ConstantsUtil {
     public static int maxPhotoNum = 5;   //每个点最大的拍摄张数
     public static long maxPhotoTime = 86400000;   //每个预约点最大的拍摄时长
 
+    public static void main(String[] args) {
+		System.out.println(getSecret("616515395"));
+	}
 
 }
